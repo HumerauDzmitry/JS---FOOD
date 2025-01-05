@@ -38,7 +38,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   // Timer
-  const deadline = '2024-01-10';
+  const deadline = '2025-01-10';
   function getTimeRemaining(endtime) {
     let days, hours, minutes, seconds;
     const t = Date.parse(endtime) - Date.parse(new Date());
@@ -55,6 +55,7 @@ window.addEventListener('DOMContentLoaded', () => {
       'seconds': seconds
     };
   }
+  ;
   function getZero(num) {
     if (num >= 0 && num < 10) {
       return `0${num}`;
@@ -62,6 +63,7 @@ window.addEventListener('DOMContentLoaded', () => {
       return num;
     }
   }
+  ;
   function setClock(selector, endtime) {
     const timer = document.querySelector(selector),
       days = timer.querySelector('#days'),
@@ -81,7 +83,76 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+  ;
   setClock('.timer', deadline);
+
+  // Modal
+
+  // const modalTrigger = document.querySelectorAll('[data-modal]'),
+  // 		modal = document.querySelector('.modal'),
+  // 		modalCloseBtn = document.querySelector('[data-close]');
+
+  // modalTrigger.addEventListener('click', () => {
+  // 	modal.classList.add('show');
+  // 	modal.classList.remove('hide');
+  // });
+
+  // modalCloseBtn.addEventListener('click', () => {
+  // 	modal.classList.add('hide');
+  // 	modal.classList.remove('show');
+  // });
+
+  const modalTrigger = document.querySelectorAll('[data-modal]'),
+    modal = document.querySelector('.modal'),
+    modalCloseBtn = document.querySelector('[data-close]');
+  function openModal() {
+    modal.classList.add('show');
+    modal.classList.remove('hide');
+    // Либо вариант с toggle - но тогда назначить класс в верстке
+    document.body.style.overflow = 'hidden';
+  }
+  modalTrigger.forEach(btn => {
+    btn.addEventListener('click', openModal);
+  });
+  function closeModal() {
+    modal.classList.add('hide');
+    modal.classList.remove('show');
+    // Либо вариант с toggle - но тогда назначить класс в верстке
+    document.body.style.overflow = '';
+  }
+  ;
+  modalCloseBtn.addEventListener('click', () => {
+    modal.classList.add('hide');
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+  });
+  modalCloseBtn.addEventListener('click', closeModal);
+
+  // закрытие модального окна по клику за пределами модального окна
+  modal.addEventListener('click', event => {
+    if (event.target === modal) {
+      closeModal();
+    }
+  });
+
+  // закрытие модального окна по клавише
+  document.addEventListener('keydown', event => {
+    if (event.code === "Escape" && modal.classList.contains('show')) {
+      closeModal();
+    }
+  });
+
+  // открытие модального окна через 5 секунд после обновленя страницы
+  const modalTimerId = setTimeout(openModal, 5000);
+
+  // открытие модального окна когда доскролишь страницу до конца
+  function showModalByScroll() {
+    if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
+      openModal();
+      window.removeEventListener('scroll', showModalByScroll);
+    }
+  }
+  window.addEventListener('scroll', showModalByScroll);
 });
 /******/ })()
 ;
